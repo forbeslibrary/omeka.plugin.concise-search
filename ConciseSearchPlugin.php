@@ -60,7 +60,7 @@ class ConciseSearchPlugin extends Omeka_Plugin_AbstractPlugin {
           }
         }
       } else { // if we had a flat array then we are iterating directly over elements
-        if (!isset($pairs[$key])) {
+        if (!isset($pairs[$optionKey])) {
           unset($selectOptions[$optionKey]);
         }
       }
