@@ -10,7 +10,10 @@ class ConciseSearchPlugin extends Omeka_Plugin_AbstractPlugin {
    * Returns an array of item-type id-name pairs suitable for use with
    * select() in html forms. Only item-types in use will be returned.
    */
-  function filterItemTypesSelectOptions() {
+  function filterItemTypesSelectOptions( $selectOptions ) {
+    if (is_admin_theme()) {
+        return $selectOptions;
+    }
     $db = get_db();
     $select = $db->select(
       )->distinct(
