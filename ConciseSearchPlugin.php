@@ -31,7 +31,7 @@ class ConciseSearchPlugin extends Omeka_Plugin_AbstractPlugin {
   /**
    * Removes elements that are not used from the select
    */
-  function filterElementsSelectOptions( $elementSets ) {
+  function filterElementsSelectOptions( $selectOptions ) {
     $db = get_db();
     $select = $db->select(
       )->distinct(
@@ -50,13 +50,21 @@ class ConciseSearchPlugin extends Omeka_Plugin_AbstractPlugin {
         current_user() ? '1=1' : 'I.public'
       );
     $pairs = $db->fetchPairs($select);
-    foreach ($elementSets as $setKey => $elements) {
-      foreach ($elements as $elementKey => $element) {
-        if (!isset($pairs[$elementKey])) {
-          unset($elementSets[$setKey][$elementKey]);
+    foreach ($selectOptions as $optionKey => $optionValue) {
+      // For some Omeka installs $selectOptions will be made up of nested arrays
+      // If this is the case, then we are iterating over element sets
+      if (is_array($optionValue)) {
+        foreach ($optionValue as $key => $value) {
+          if (!isset($pairs[$key])) {
+            unset($selectOptions[$optionKey][$key]);
+          }
+        }
+      } else { // if we had a flat array then we are iterating directly over elements
+        if (!isset($pairs[$key])) {
+          unset($selectOptions[$optionKey]);
         }
       }
     }
-    return $elementSets;
+    return $selectOptions;
   }
 }
